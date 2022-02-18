@@ -1,16 +1,16 @@
-require('dotenv').config()//we set our enviromental variables
-const http = require('http')//http server
-const express = require('express')//express
-const cors = require('cors')//cors middleware
-const mongoose = require('mongoose')
+require('dotenv').config()              //we set our enviromental variables
+const http = require('http')            //http server
+const express = require('express')      //express
+const cors = require('cors')            //cors middleware
+const mongoose = require('mongoose')    //mongoose
+const passport = require('passport')    //passport
 
 //create server instance
 const app = express()
 const httpServer = http.createServer(app)
 
-
 //launch server
-httpServer.listen(process.env.PORT, () => {
+httpServer.listen(process.env.PORT || 3000, () => {
     console.log(`app running on port: ${process.env.PORT}`)
 })
 
@@ -18,23 +18,14 @@ httpServer.listen(process.env.PORT, () => {
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
+app.use(passport.initialize())
 
 //CONNECT DB
-mongoose.connect('mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false').then(()=>console.log('mongodb connected...'))
+mongoose.connect('mongodb://localhost:27017/chat').then(()=>console.log('mongodb connected...'))
+
+//ROUTES
+app.use('/api/auth', require('./routes/auth-routes'))
 
 //SOCKETS
-const Sockets = require('./lib/socketio/Sockets')//require sockets 
-const { getIO } = require('./lib/socketio/actions')//get socket actions
-
-const io = getIO(httpServer)//we start the socket server
-
-io.on('connection', (socket) => {//on connection
-
-    socket.on('disconnect', () => {//on disconnect, unregister socket
-        Sockets.removeById(socket.data.id)
-    });
-
-    socket.on('join', async ({room: chatId}) => {//on join, register socket
-        
-    });
-});
+const initWebSockets = require('./lib/socketio/init')//the initWebSockets function inits all the socket stuff
+initWebSockets(httpServer)
