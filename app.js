@@ -23,8 +23,13 @@ app.use(passport.initialize())
 //CONNECT DB
 mongoose.connect('mongodb://localhost:27017/chat').then(()=>console.log('mongodb connected...'))
 
+//PASSPORT CONFIG
+app.use(passport.initialize())
+require('./config/passport')(passport)
+
 //ROUTES
 app.use('/api/auth', require('./routes/auth-routes'))
+app.use('/api/chat', require('./routes/chat-routes'))
 
 //SOCKETS
 const initWebSockets = require('./lib/socketio/init')//the initWebSockets function inits all the socket stuff

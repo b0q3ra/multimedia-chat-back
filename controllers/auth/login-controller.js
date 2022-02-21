@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const User = require('../../models/user')
+const jwt = require('jsonwebtoken')
 
 const login = async (req, res) => {//login function
     try {
@@ -18,6 +19,13 @@ const login = async (req, res) => {//login function
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(!isPasswordValid) throw "The password is not valid"
 
+        /*Generate JWT token */
+        const payload = {id: user._id, email: user.email, hash: user.password}//create payload and sign it
+        let token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 3600*24})
+        
+        if(!token) throw 'Error while generating the JWT token'
+        user.token = token
+        user.save()
 
         /*Retrun Data */
         user = user.toJSON()

@@ -15,9 +15,10 @@ const register = async (req, res) => {//register controller
         /*Pocess Data */
         let user = await User.create({
             email: email,
-            password: await bcrypt.hash(password, 10)
+            password: await bcrypt.hash(password, 10),
+            token: ''
         })
-
+        
         if(!user) throw "Error with the db"
 
         /*Retrun Data */
