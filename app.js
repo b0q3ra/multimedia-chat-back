@@ -30,6 +30,7 @@ require('./config/passport')(passport)
 //ROUTES
 app.use('/api/auth', require('./routes/auth-routes'))
 app.use('/api/chat', require('./routes/chat-routes'))
+app.use('/api/user', require('./routes/user-routes'))
 
 //SOCKETS
 const initWebSockets = require('./lib/socketio/init')//the initWebSockets function inits all the socket stuff

@@ -13,7 +13,7 @@ module.exports = (passport) => {
         
         try {
             let user = await User.findById(jwt_payload.id)  //search user by id in db
-
+            
             if(user){ return done(null, user) }             //if user exists, pass user to controller
 
             return done(null, false)                        //if user doesn't exist, pass false

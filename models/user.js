@@ -8,7 +8,7 @@ const userSchema = new Schema(
     password: String,
     createdAt: { type: Date, default: Date.now },
     token: {type: String, default: ''},
-    active: {type: Boolean, default: false}
+    active: {type: Boolean, default: false},
   },
   {
     toJSON: {
